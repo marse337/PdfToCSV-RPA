@@ -1,0 +1,538 @@
+<Activity mc:Ignorable="sap sap2010 sads" x:Class="ReadCSVFilesImport" mva:VisualBasic.Settings="{x:Null}" sap2010:WorkflowViewState.IdRef="New_Workflow_1"
+ xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities"
+ xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+ xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities"
+ xmlns:oa="clr-namespace:OpenRPA.Activities;assembly=OpenRPA"
+ xmlns:on="clr-namespace:OpenRPA.NM;assembly=OpenRPA.NM"
+ xmlns:osa="clr-namespace:OpenRPA.Script.Activities;assembly=OpenRPA.Script"
+ xmlns:ou="clr-namespace:OpenRPA.Utilities;assembly=OpenRPA.Utilities"
+ xmlns:s="clr-namespace:System;assembly=mscorlib"
+ xmlns:sads="http://schemas.microsoft.com/netfx/2010/xaml/activities/debugger"
+ xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation"
+ xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation"
+ xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib"
+ xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=mscorlib"
+ xmlns:sd="clr-namespace:System.Data;assembly=System.Data"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <TextExpression.NamespacesForImplementation>
+    <sco:Collection x:TypeArguments="x:String">
+      <x:String>System</x:String>
+      <x:String>System.Xml</x:String>
+      <x:String>OpenRPA</x:String>
+      <x:String>System.Data</x:String>
+      <x:String>System.Linq</x:String>
+      <x:String>Microsoft.VisualBasic</x:String>
+      <x:String>System.Xml.Serialization</x:String>
+      <x:String>System.Activities</x:String>
+      <x:String>OpenRPA.NM</x:String>
+      <x:String>OpenRPA.Interfaces</x:String>
+    </sco:Collection>
+  </TextExpression.NamespacesForImplementation>
+  <TextExpression.ReferencesForImplementation>
+    <sco:Collection x:TypeArguments="AssemblyReference">
+      <AssemblyReference>mscorlib</AssemblyReference>
+      <AssemblyReference>System.Xml</AssemblyReference>
+      <AssemblyReference>OpenRPA</AssemblyReference>
+      <AssemblyReference>OpenRPA.Interfaces</AssemblyReference>
+      <AssemblyReference>System.Data</AssemblyReference>
+      <AssemblyReference>System.Core</AssemblyReference>
+      <AssemblyReference>Microsoft.VisualBasic</AssemblyReference>
+      <AssemblyReference>System.Data.DataSetExtensions</AssemblyReference>
+      <AssemblyReference>System</AssemblyReference>
+      <AssemblyReference>System.Memory</AssemblyReference>
+      <AssemblyReference>Microsoft.Bcl.AsyncInterfaces</AssemblyReference>
+      <AssemblyReference>Microsoft.Bcl.HashCode</AssemblyReference>
+      <AssemblyReference>System.ValueTuple</AssemblyReference>
+      <AssemblyReference>System.ServiceModel</AssemblyReference>
+      <AssemblyReference>System.ComponentModel.Composition</AssemblyReference>
+      <AssemblyReference>System.Net.WebSockets.Client.Managed</AssemblyReference>
+      <AssemblyReference>System.Runtime.WindowsRuntime</AssemblyReference>
+      <AssemblyReference>System.Activities</AssemblyReference>
+      <AssemblyReference>OpenRPA.NM</AssemblyReference>
+    </sco:Collection>
+  </TextExpression.ReferencesForImplementation>
+  <Sequence DisplayName="MainSequence" sap2010:WorkflowViewState.IdRef="Sequence_1">
+    <Sequence.Variables>
+      <Variable x:TypeArguments="x:Int32" Name="csvFileCountVar" />
+      <Variable x:TypeArguments="s:String[]" Name="CSVFilePathArray" />
+      <Variable x:TypeArguments="x:String" Default="cd %USERPROFILE%\Desktop\TextFormatter" Name="CommandPrompt" />
+      <Variable x:TypeArguments="x:String" Default="python UpdatedTextFormatter.py" Name="PythonScript" />
+      <Variable x:TypeArguments="x:String" Default="UpdateMe" Name="CSVFilePath" />
+      <Variable x:TypeArguments="x:Int32" Default="1" Name="RowsCount" />
+      <Variable x:TypeArguments="x:Int32" Default="0" Name="RowIndex" />
+      <Variable x:TypeArguments="x:String" Name="Results" />
+      <Variable x:TypeArguments="x:Int32" Name="FileIndexNumber" />
+      <Variable x:TypeArguments="x:Int32" Default="50" Name="TimeVar" />
+    </Sequence.Variables>
+    <oa:InsertClipboard Image="{x:Null}" DisplayName="CommandPrompt String" sap2010:WorkflowViewState.IdRef="InsertClipboard_1" IgnoreErrors="False" Text="[CommandPrompt]" />
+    <osa:InvokeCode PipelineOutput="{x:Null}" Code="Send, {LWin down}r{LWin up}&#xA;Sleep 100&#xA;Send, cmd{Enter}&#xA;Sleep 1000&#xA;Send, ^v&#xA;Sleep 100&#xA;Send, {Enter}&#xA;return" DisplayName="Launch Cmd Prompt" sap2010:WorkflowViewState.IdRef="InvokeCode_2" Language="AutoHotkey">
+      <osa:InvokeCode.namespaces>
+        <x:Array Type="x:String">
+          <x:String>System</x:String>
+          <x:String>System.Xml</x:String>
+          <x:String>OpenRPA</x:String>
+          <x:String>System.Data</x:String>
+          <x:String>System.Linq</x:String>
+          <x:String>Microsoft.VisualBasic</x:String>
+          <x:String>System.Xml.Serialization</x:String>
+          <x:String>System.Activities</x:String>
+          <x:String>OpenRPA.NM</x:String>
+          <x:String>OpenRPA.Interfaces</x:String>
+          <x:String>System.Collections</x:String>
+          <x:String>System.Collections.Generic</x:String>
+        </x:Array>
+      </osa:InvokeCode.namespaces>
+    </osa:InvokeCode>
+    <oa:InsertClipboard Image="{x:Null}" DisplayName="Insert Python script" sap2010:WorkflowViewState.IdRef="InsertClipboard_2" IgnoreErrors="False" Text="[PythonScript]" />
+    <osa:InvokeCode PipelineOutput="{x:Null}" Code="Send, ^v&#xA;Sleep 100&#xA;Send, {Enter}&#xA;Sleep 100&#xA;return" DisplayName="Paste Python" sap2010:WorkflowViewState.IdRef="InvokeCode_3" Language="AutoHotkey">
+      <osa:InvokeCode.namespaces>
+        <x:Array Type="x:String">
+          <x:String>System</x:String>
+          <x:String>System.Xml</x:String>
+          <x:String>OpenRPA</x:String>
+          <x:String>System.Data</x:String>
+          <x:String>System.Linq</x:String>
+          <x:String>Microsoft.VisualBasic</x:String>
+          <x:String>System.Xml.Serialization</x:String>
+          <x:String>System.Activities</x:String>
+          <x:String>OpenRPA.NM</x:String>
+          <x:String>OpenRPA.Interfaces</x:String>
+          <x:String>System.Collections</x:String>
+          <x:String>System.Collections.Generic</x:String>
+        </x:Array>
+      </osa:InvokeCode.namespaces>
+    </osa:InvokeCode>
+    <osa:InvokeCode PipelineOutput="{x:Null}" Code="Send, !{F4}&#xA;return" DisplayName="Close Command Prompt" sap2010:WorkflowViewState.IdRef="InvokeCode_4" Language="AutoHotkey">
+      <osa:InvokeCode.namespaces>
+        <x:Array Type="x:String">
+          <x:String>System</x:String>
+          <x:String>System.Xml</x:String>
+          <x:String>OpenRPA</x:String>
+          <x:String>System.Data</x:String>
+          <x:String>System.Linq</x:String>
+          <x:String>Microsoft.VisualBasic</x:String>
+          <x:String>System.Xml.Serialization</x:String>
+          <x:String>System.Activities</x:String>
+          <x:String>OpenRPA.NM</x:String>
+          <x:String>OpenRPA.Interfaces</x:String>
+          <x:String>System.Collections</x:String>
+          <x:String>System.Collections.Generic</x:String>
+        </x:Array>
+      </osa:InvokeCode.namespaces>
+    </osa:InvokeCode>
+    <Delay Duration="[TimeSpan.FromMilliseconds(1000)]" sap2010:WorkflowViewState.IdRef="Delay_4" />
+    <osa:InvokeCode PipelineOutput="{x:Null}" Code="Dim folderPath As String = CSVFilePath&#xA;Dim csvFiles() As String = System.IO.Directory.GetFiles(folderPath, &quot;*.csv&quot;)&#xA;&#xA;' Sort the files based on creation time&#xA;Dim sortedCsvFiles As Array = csvFiles.OrderBy(Function(f) System.IO.File.GetCreationTime(f)).ToArray()&#xA;CSVFilePathArray = sortedCsvFiles&#xA;' Count the number of CSV files&#xA;Dim csvFileCount As Integer = sortedCsvFiles.Length&#xA;csvFileCountVar = csvFileCount&#xA;' Display the count&#xA;Console.WriteLine(&quot;Total number of CSV files in the folder: &quot; &amp; csvFileCount)&#xA;&#xA;' Display the sorted list&#xA;For i As Integer = 0 To sortedCsvFiles.Length - 1&#xA;    Console.WriteLine(&quot;Index: &quot; &amp; i.ToString() &amp; &quot;, File: &quot; &amp; sortedCsvFiles(i))&#xA;Next&#xA;" DisplayName="CreatingCSVFilePathVariable" sap2010:WorkflowViewState.IdRef="InvokeCode_1" Language="VB">
+      <osa:InvokeCode.namespaces>
+        <x:Array Type="x:String">
+          <x:String>System</x:String>
+          <x:String>System.Xml</x:String>
+          <x:String>OpenRPA</x:String>
+          <x:String>System.Data</x:String>
+          <x:String>System.Linq</x:String>
+          <x:String>Microsoft.VisualBasic</x:String>
+          <x:String>System.Xml.Serialization</x:String>
+          <x:String>System.Activities</x:String>
+          <x:String>OpenRPA.NM</x:String>
+          <x:String>OpenRPA.Interfaces</x:String>
+          <x:String>System.Collections</x:String>
+          <x:String>System.Collections.Generic</x:String>
+        </x:Array>
+      </osa:InvokeCode.namespaces>
+    </osa:InvokeCode>
+    <Delay Duration="[TimeSpan.FromMilliseconds(1000)]" sap2010:WorkflowViewState.IdRef="Delay_1" />
+    <on:OpenURL NewTab="{x:Null}" UserDataFolderMode="{x:Null}" UserDataFolderPath="{x:Null}" Browser="ff" DisplayName="FireFox-RPAChallenge" sap2010:WorkflowViewState.IdRef="OpenURL_1" Url="https://rpachallenge.com/" />
+    <osa:InvokeCode PipelineOutput="{x:Null}" Code="#Persistent&#xA;SetTitleMatchMode, 2 ; Allows for partial matching of window titles&#xA;&#xA;IfWinExist, ahk_exe firefox.exe ; Check if Firefox is running&#xA;{&#xA;    WinActivate ; Activate the main Firefox window&#xA;    WinWaitActive ; Wait until Firefox is active&#xA;&#xA;    ; Check if the current active tab is the desired one&#xA;    IfWinActive, Rpa Challenge&#xA;    {&#xA;        ;MsgBox, Already on the Patatap tab.&#xA;        return&#xA;    }&#xA;&#xA;    ; If not, start looping through the tabs&#xA;    Loop &#xA;    {&#xA;        ; Send Ctrl+Tab to switch to the next tab&#xA;        Send, ^{Tab}&#xA;        Sleep, 300 ; Wait a bit for the tab to change&#xA;&#xA;        ; If the desired tab is found, exit the loop&#xA;        IfWinActive, Rpa Challenge&#xA;            break&#xA;    }&#xA;}&#xA;return&#xA;" DisplayName="FocusFirefox" sap2010:WorkflowViewState.IdRef="InvokeCode_5" Language="AutoHotkey">
+      <osa:InvokeCode.namespaces>
+        <x:Array Type="x:String">
+          <x:String>System</x:String>
+          <x:String>System.Xml</x:String>
+          <x:String>OpenRPA</x:String>
+          <x:String>System.Data</x:String>
+          <x:String>System.Linq</x:String>
+          <x:String>Microsoft.VisualBasic</x:String>
+          <x:String>System.Xml.Serialization</x:String>
+          <x:String>System.Activities</x:String>
+          <x:String>OpenRPA.NM</x:String>
+          <x:String>OpenRPA.Interfaces</x:String>
+          <x:String>System.Collections</x:String>
+          <x:String>System.Collections.Generic</x:String>
+        </x:Array>
+      </osa:InvokeCode.namespaces>
+    </osa:InvokeCode>
+    <on:GetElement Elements="{x:Null}" From="{x:Null}" Image="{x:Null}" LoopAction="{x:Null}" Timeout="{x:Null}" WaitForReady="{x:Null}" DisplayName="Start the Challenge" sap2010:WorkflowViewState.IdRef="GetElement_8" MaxResults="1" MinResults="1" Selector="%[&#xA;  {&#xA;    &quot;Selector&quot;: &quot;NM&quot;,&#xA;    &quot;browser&quot;: &quot;ff&quot;,&#xA;    &quot;frame&quot;: &quot;-1&quot;,&#xA;    &quot;url&quot;: &quot;https://rpachallenge.com/&quot;&#xA;  },&#xA;  {&#xA;    &quot;xpath&quot;: &quot;/html/body/app-root/div[2]/app-rpa1/div/div[1]/div[6]/button&quot;&#xA;  }&#xA;]">
+      <on:GetElement.Variables>
+        <Variable x:TypeArguments="x:Int32" Default="0" Name="Index" />
+        <Variable x:TypeArguments="x:Int32" Default="0" Name="Total" />
+      </on:GetElement.Variables>
+      <ActivityAction x:TypeArguments="on:NMElement">
+        <ActivityAction.Argument>
+          <DelegateInArgument x:TypeArguments="on:NMElement" Name="item" />
+        </ActivityAction.Argument>
+        <oa:ClickElement KeyModifiers="{x:Null}" AnimateMouse="False" Button="1" DoubleClick="False" Element="[item]" sap2010:WorkflowViewState.IdRef="ClickElement_1" OffsetX="5" OffsetY="5" PostWait="00:00:00" VirtualClick="True" />
+      </ActivityAction>
+    </on:GetElement>
+    <oa:BreakableWhile Condition="[FileIndexNumber &lt; csvFileCountVar]" sap2010:WorkflowViewState.IdRef="BreakableWhile_1">
+      <oa:BreakableWhile.Variables>
+        <sco:Collection x:TypeArguments="Variable" />
+      </oa:BreakableWhile.Variables>
+      <Sequence sap2010:WorkflowViewState.IdRef="Sequence_3">
+        <Sequence sap2010:Annotation.AnnotationText="Show notification CSVFilePathArray(IndexNumber)" sap2010:WorkflowViewState.IdRef="Sequence_2">
+          <Sequence.Variables>
+            <Variable x:TypeArguments="sd:DataTable" Name="DataTableVar" />
+          </Sequence.Variables>
+          <ou:ReadCSV Delimeter="{x:Null}" DataTable="[DataTableVar]" Filename="[CSVFilePathArray(FileIndexNumber)]" sap2010:WorkflowViewState.IdRef="ReadCSV_1" UseHeaderRow="True" />
+          <Delay Duration="[TimeSpan.FromMilliseconds(TimeVar)]" sap2010:WorkflowViewState.IdRef="Delay_18" />
+          <osa:InvokeCode PipelineOutput="{x:Null}" Code="If DataTableVar IsNot Nothing Then&#xA;    Dim rowCount As Integer = DataTableVar.Rows.Count&#xA;    RowsCount = rowCount&#xA;    ' ... other code&#xA;Else&#xA;    ' Handle the case where DataTableVar is Nothing, maybe log an error or display a message&#xA;End If&#xA;" DisplayName="CountRows" sap2010:WorkflowViewState.IdRef="InvokeCode_6" Language="VB">
+            <osa:InvokeCode.namespaces>
+              <x:Array Type="x:String">
+                <x:String>System</x:String>
+                <x:String>System.Xml</x:String>
+                <x:String>OpenRPA</x:String>
+                <x:String>System.Data</x:String>
+                <x:String>System.Linq</x:String>
+                <x:String>Microsoft.VisualBasic</x:String>
+                <x:String>System.Xml.Serialization</x:String>
+                <x:String>System.Activities</x:String>
+                <x:String>OpenRPA.NM</x:String>
+                <x:String>OpenRPA.Interfaces</x:String>
+                <x:String>System.Collections</x:String>
+                <x:String>System.Collections.Generic</x:String>
+              </x:Array>
+            </osa:InvokeCode.namespaces>
+          </osa:InvokeCode>
+          <Delay Duration="[TimeSpan.FromMilliseconds(TimeVar)]" sap2010:WorkflowViewState.IdRef="Delay_19" />
+          <oa:BreakableWhile Condition="[RowIndex &lt; RowsCount -1]" sap2010:WorkflowViewState.IdRef="BreakableWhile_2">
+            <oa:BreakableWhile.Variables>
+              <sco:Collection x:TypeArguments="Variable" />
+            </oa:BreakableWhile.Variables>
+            <Sequence sap2010:WorkflowViewState.IdRef="Sequence_5">
+              <Sequence sap2010:WorkflowViewState.IdRef="Sequence_4">
+                <on:GetElement Elements="{x:Null}" From="{x:Null}" Image="{x:Null}" LoopAction="{x:Null}" Timeout="{x:Null}" WaitForReady="{x:Null}" DisplayName="ClickStart" sap2010:WorkflowViewState.IdRef="GetElement_9" MaxResults="1" MinResults="1" Selector="%[&#xA;  {&#xA;    &quot;Selector&quot;: &quot;NM&quot;,&#xA;    &quot;browser&quot;: &quot;ff&quot;,&#xA;    &quot;frame&quot;: &quot;-1&quot;,&#xA;    &quot;url&quot;: &quot;https://rpachallenge.com/&quot;&#xA;  },&#xA;  {&#xA;    &quot;xpath&quot;: &quot;/html/body/app-root/div[2]/app-rpa1/div/div[1]/div[6]/button&quot;&#xA;  }&#xA;]">
+                  <on:GetElement.Variables>
+                    <Variable x:TypeArguments="x:Int32" Default="0" Name="Index" />
+                    <Variable x:TypeArguments="x:Int32" Default="0" Name="Total" />
+                  </on:GetElement.Variables>
+                  <ActivityAction x:TypeArguments="on:NMElement">
+                    <ActivityAction.Argument>
+                      <DelegateInArgument x:TypeArguments="on:NMElement" Name="item" />
+                    </ActivityAction.Argument>
+                    <oa:ClickElement KeyModifiers="{x:Null}" AnimateMouse="False" Button="1" DoubleClick="False" Element="[item]" sap2010:WorkflowViewState.IdRef="ClickElement_2" OffsetX="5" OffsetY="5" PostWait="00:00:00" VirtualClick="True" />
+                  </ActivityAction>
+                </on:GetElement>
+                <on:GetElement Elements="{x:Null}" From="{x:Null}" Image="{x:Null}" LoopAction="{x:Null}" Timeout="{x:Null}" WaitForReady="{x:Null}" DisplayName="FirstName" sap2010:WorkflowViewState.IdRef="GetElement_1" MaxResults="1" MinResults="1" Selector="%[&#xA;  {&#xA;    &quot;Selector&quot;: &quot;NM&quot;,&#xA;    &quot;browser&quot;: &quot;ff&quot;,&#xA;    &quot;frame&quot;: &quot;-1&quot;,&#xA;    &quot;url&quot;: &quot;https://rpachallenge.com/&quot;&#xA;  },&#xA;  {&#xA;    &quot;xpath&quot;: &quot;//input[@ng-reflect-name=\&quot;labelFirstName\&quot;]&quot;&#xA;  }&#xA;]">
+                  <on:GetElement.Variables>
+                    <Variable x:TypeArguments="x:Int32" Default="0" Name="Index" />
+                    <Variable x:TypeArguments="x:Int32" Default="0" Name="Total" />
+                  </on:GetElement.Variables>
+                  <ActivityAction x:TypeArguments="on:NMElement">
+                    <ActivityAction.Argument>
+                      <DelegateInArgument x:TypeArguments="on:NMElement" Name="item" />
+                    </ActivityAction.Argument>
+                    <Assign sap2010:WorkflowViewState.IdRef="Assign_2">
+                      <Assign.To>
+                        <OutArgument x:TypeArguments="x:String">[item.Value]</OutArgument>
+                      </Assign.To>
+                      <Assign.Value>
+                        <InArgument x:TypeArguments="x:String">[DataTableVar.Rows(RowIndex).Item(0).ToString]</InArgument>
+                      </Assign.Value>
+                    </Assign>
+                  </ActivityAction>
+                </on:GetElement>
+                <Delay Duration="[TimeSpan.FromMilliseconds(TimeVar)]" sap2010:WorkflowViewState.IdRef="Delay_5" />
+                <on:GetElement Elements="{x:Null}" From="{x:Null}" Image="{x:Null}" LoopAction="{x:Null}" Timeout="{x:Null}" WaitForReady="{x:Null}" DisplayName="LastName" sap2010:WorkflowViewState.IdRef="GetElement_2" MaxResults="1" MinResults="1" Selector="%[&#xA;  {&#xA;    &quot;Selector&quot;: &quot;NM&quot;,&#xA;    &quot;browser&quot;: &quot;ff&quot;,&#xA;    &quot;frame&quot;: &quot;-1&quot;,&#xA;    &quot;url&quot;: &quot;https://rpachallenge.com/&quot;&#xA;  },&#xA;  {&#xA;    &quot;xpath&quot;: &quot;//input[@ng-reflect-name=\&quot;labelLastName\&quot;]&quot;&#xA;  }&#xA;]">
+                  <on:GetElement.Variables>
+                    <Variable x:TypeArguments="x:Int32" Default="0" Name="Index" />
+                    <Variable x:TypeArguments="x:Int32" Default="0" Name="Total" />
+                  </on:GetElement.Variables>
+                  <ActivityAction x:TypeArguments="on:NMElement">
+                    <ActivityAction.Argument>
+                      <DelegateInArgument x:TypeArguments="on:NMElement" Name="item" />
+                    </ActivityAction.Argument>
+                    <Assign sap2010:WorkflowViewState.IdRef="Assign_3">
+                      <Assign.To>
+                        <OutArgument x:TypeArguments="x:String">[item.Value]</OutArgument>
+                      </Assign.To>
+                      <Assign.Value>
+                        <InArgument x:TypeArguments="x:String">[DataTableVar.Rows(RowIndex).Item(1).ToString()]</InArgument>
+                      </Assign.Value>
+                    </Assign>
+                  </ActivityAction>
+                </on:GetElement>
+                <Delay Duration="[TimeSpan.FromMilliseconds(TimeVar)]" sap2010:WorkflowViewState.IdRef="Delay_12" />
+                <on:GetElement Elements="{x:Null}" From="{x:Null}" Image="{x:Null}" LoopAction="{x:Null}" Timeout="{x:Null}" WaitForReady="{x:Null}" DisplayName="Company" sap2010:WorkflowViewState.IdRef="GetElement_3" MaxResults="1" MinResults="1" Selector="%[&#xA;  {&#xA;    &quot;Selector&quot;: &quot;NM&quot;,&#xA;    &quot;browser&quot;: &quot;ff&quot;,&#xA;    &quot;frame&quot;: &quot;-1&quot;,&#xA;    &quot;url&quot;: &quot;https://rpachallenge.com/&quot;&#xA;  },&#xA;  {&#xA;    &quot;xpath&quot;: &quot;//input[@ng-reflect-name=\&quot;labelCompanyName\&quot;]&quot;&#xA;  }&#xA;]">
+                  <on:GetElement.Variables>
+                    <Variable x:TypeArguments="x:Int32" Default="0" Name="Index" />
+                    <Variable x:TypeArguments="x:Int32" Default="0" Name="Total" />
+                  </on:GetElement.Variables>
+                  <ActivityAction x:TypeArguments="on:NMElement">
+                    <ActivityAction.Argument>
+                      <DelegateInArgument x:TypeArguments="on:NMElement" Name="item" />
+                    </ActivityAction.Argument>
+                    <Assign sap2010:WorkflowViewState.IdRef="Assign_4">
+                      <Assign.To>
+                        <OutArgument x:TypeArguments="x:String">[item.Value]</OutArgument>
+                      </Assign.To>
+                      <Assign.Value>
+                        <InArgument x:TypeArguments="x:String">[DataTableVar.Rows(RowIndex).Item(2).ToString]</InArgument>
+                      </Assign.Value>
+                    </Assign>
+                  </ActivityAction>
+                </on:GetElement>
+                <Delay Duration="[TimeSpan.FromMilliseconds(TimeVar)]" sap2010:WorkflowViewState.IdRef="Delay_13" />
+                <on:GetElement Elements="{x:Null}" From="{x:Null}" Image="{x:Null}" LoopAction="{x:Null}" Timeout="{x:Null}" WaitForReady="{x:Null}" DisplayName="RoleInCompany" sap2010:WorkflowViewState.IdRef="GetElement_4" MaxResults="1" MinResults="1" Selector="%[&#xA;  {&#xA;    &quot;Selector&quot;: &quot;NM&quot;,&#xA;    &quot;browser&quot;: &quot;ff&quot;,&#xA;    &quot;frame&quot;: &quot;-1&quot;,&#xA;    &quot;url&quot;: &quot;https://rpachallenge.com/&quot;&#xA;  },&#xA;  {&#xA;    &quot;xpath&quot;: &quot;//input[@ng-reflect-name=\&quot;labelRole\&quot;]&quot;&#xA;  }&#xA;]">
+                  <on:GetElement.Variables>
+                    <Variable x:TypeArguments="x:Int32" Default="0" Name="Index" />
+                    <Variable x:TypeArguments="x:Int32" Default="0" Name="Total" />
+                  </on:GetElement.Variables>
+                  <ActivityAction x:TypeArguments="on:NMElement">
+                    <ActivityAction.Argument>
+                      <DelegateInArgument x:TypeArguments="on:NMElement" Name="item" />
+                    </ActivityAction.Argument>
+                    <Assign sap2010:WorkflowViewState.IdRef="Assign_5">
+                      <Assign.To>
+                        <OutArgument x:TypeArguments="x:String">[item.Value]</OutArgument>
+                      </Assign.To>
+                      <Assign.Value>
+                        <InArgument x:TypeArguments="x:String">[DataTableVar.Rows(RowIndex).Item(3).ToString]</InArgument>
+                      </Assign.Value>
+                    </Assign>
+                  </ActivityAction>
+                </on:GetElement>
+                <Delay Duration="[TimeSpan.FromMilliseconds(TimeVar)]" sap2010:WorkflowViewState.IdRef="Delay_14" />
+                <on:GetElement Elements="{x:Null}" From="{x:Null}" Image="{x:Null}" LoopAction="{x:Null}" Timeout="{x:Null}" WaitForReady="{x:Null}" DisplayName="Address" sap2010:WorkflowViewState.IdRef="GetElement_5" MaxResults="1" MinResults="1" Selector="%[&#xA;  {&#xA;    &quot;Selector&quot;: &quot;NM&quot;,&#xA;    &quot;browser&quot;: &quot;ff&quot;,&#xA;    &quot;frame&quot;: &quot;-1&quot;,&#xA;    &quot;url&quot;: &quot;https://rpachallenge.com/&quot;&#xA;  },&#xA;  {&#xA;    &quot;xpath&quot;: &quot;//input[@ng-reflect-name=\&quot;labelAddress\&quot;]&quot;&#xA;  }&#xA;]">
+                  <on:GetElement.Variables>
+                    <Variable x:TypeArguments="x:Int32" Default="0" Name="Index" />
+                    <Variable x:TypeArguments="x:Int32" Default="0" Name="Total" />
+                  </on:GetElement.Variables>
+                  <ActivityAction x:TypeArguments="on:NMElement">
+                    <ActivityAction.Argument>
+                      <DelegateInArgument x:TypeArguments="on:NMElement" Name="item" />
+                    </ActivityAction.Argument>
+                    <Assign sap2010:WorkflowViewState.IdRef="Assign_6">
+                      <Assign.To>
+                        <OutArgument x:TypeArguments="x:String">[item.Value]</OutArgument>
+                      </Assign.To>
+                      <Assign.Value>
+                        <InArgument x:TypeArguments="x:String">[DataTableVar.Rows(RowIndex).Item(4).ToString]</InArgument>
+                      </Assign.Value>
+                    </Assign>
+                  </ActivityAction>
+                </on:GetElement>
+                <Delay Duration="[TimeSpan.FromMilliseconds(TimeVar)]" sap2010:WorkflowViewState.IdRef="Delay_15" />
+                <on:GetElement Elements="{x:Null}" From="{x:Null}" Image="{x:Null}" LoopAction="{x:Null}" Timeout="{x:Null}" WaitForReady="{x:Null}" DisplayName="Email" sap2010:WorkflowViewState.IdRef="GetElement_6" MaxResults="1" MinResults="1" Selector="%[&#xA;  {&#xA;    &quot;Selector&quot;: &quot;NM&quot;,&#xA;    &quot;browser&quot;: &quot;ff&quot;,&#xA;    &quot;frame&quot;: &quot;-1&quot;,&#xA;    &quot;url&quot;: &quot;https://rpachallenge.com/&quot;&#xA;  },&#xA;  {&#xA;    &quot;xpath&quot;: &quot;//input[@ng-reflect-name=\&quot;labelEmail\&quot;]&quot;&#xA;  }&#xA;]">
+                  <on:GetElement.Variables>
+                    <Variable x:TypeArguments="x:Int32" Default="0" Name="Index" />
+                    <Variable x:TypeArguments="x:Int32" Default="0" Name="Total" />
+                  </on:GetElement.Variables>
+                  <ActivityAction x:TypeArguments="on:NMElement">
+                    <ActivityAction.Argument>
+                      <DelegateInArgument x:TypeArguments="on:NMElement" Name="item" />
+                    </ActivityAction.Argument>
+                    <Assign sap2010:WorkflowViewState.IdRef="Assign_7">
+                      <Assign.To>
+                        <OutArgument x:TypeArguments="x:String">[item.Value]</OutArgument>
+                      </Assign.To>
+                      <Assign.Value>
+                        <InArgument x:TypeArguments="x:String">[DataTableVar.Rows(RowIndex).Item(5).ToString]</InArgument>
+                      </Assign.Value>
+                    </Assign>
+                  </ActivityAction>
+                </on:GetElement>
+                <Delay Duration="[TimeSpan.FromMilliseconds(TimeVar)]" sap2010:WorkflowViewState.IdRef="Delay_16" />
+                <on:GetElement Elements="{x:Null}" From="{x:Null}" Image="{x:Null}" LoopAction="{x:Null}" Timeout="{x:Null}" WaitForReady="{x:Null}" DisplayName="PhoneNumber" sap2010:WorkflowViewState.IdRef="GetElement_7" MaxResults="1" MinResults="1" Selector="%[&#xA;  {&#xA;    &quot;Selector&quot;: &quot;NM&quot;,&#xA;    &quot;browser&quot;: &quot;ff&quot;,&#xA;    &quot;frame&quot;: &quot;-1&quot;,&#xA;    &quot;url&quot;: &quot;https://rpachallenge.com/&quot;&#xA;  },&#xA;  {&#xA;    &quot;xpath&quot;: &quot;//input[@ng-reflect-name=\&quot;labelPhone\&quot;]&quot;&#xA;  }&#xA;]">
+                  <on:GetElement.Variables>
+                    <Variable x:TypeArguments="x:Int32" Default="0" Name="Index" />
+                    <Variable x:TypeArguments="x:Int32" Default="0" Name="Total" />
+                  </on:GetElement.Variables>
+                  <ActivityAction x:TypeArguments="on:NMElement">
+                    <ActivityAction.Argument>
+                      <DelegateInArgument x:TypeArguments="on:NMElement" Name="item" />
+                    </ActivityAction.Argument>
+                    <Assign sap2010:WorkflowViewState.IdRef="Assign_8">
+                      <Assign.To>
+                        <OutArgument x:TypeArguments="x:String">[item.Value]</OutArgument>
+                      </Assign.To>
+                      <Assign.Value>
+                        <InArgument x:TypeArguments="x:String">[DataTableVar.Rows(RowIndex).Item(6).ToString]</InArgument>
+                      </Assign.Value>
+                    </Assign>
+                  </ActivityAction>
+                </on:GetElement>
+                <Delay Duration="[TimeSpan.FromMilliseconds(TimeVar)]" sap2010:WorkflowViewState.IdRef="Delay_17" />
+                <on:GetElement Elements="{x:Null}" From="{x:Null}" Image="{x:Null}" LoopAction="{x:Null}" Timeout="{x:Null}" WaitForReady="{x:Null}" DisplayName="ClickSubmit" sap2010:WorkflowViewState.IdRef="GetElement_10" MaxResults="1" MinResults="1" Selector="%[&#xA;  {&#xA;    &quot;Selector&quot;: &quot;NM&quot;,&#xA;    &quot;browser&quot;: &quot;ff&quot;,&#xA;    &quot;frame&quot;: &quot;-1&quot;,&#xA;    &quot;url&quot;: &quot;https://rpachallenge.com/&quot;&#xA;  },&#xA;  {&#xA;    &quot;xpath&quot;: &quot;/html/body/app-root/div[2]/app-rpa1/div/div[2]/form/input&quot;&#xA;  }&#xA;]">
+                  <on:GetElement.Variables>
+                    <Variable x:TypeArguments="x:Int32" Default="0" Name="Index" />
+                    <Variable x:TypeArguments="x:Int32" Default="0" Name="Total" />
+                  </on:GetElement.Variables>
+                  <ActivityAction x:TypeArguments="on:NMElement">
+                    <ActivityAction.Argument>
+                      <DelegateInArgument x:TypeArguments="on:NMElement" Name="item" />
+                    </ActivityAction.Argument>
+                    <oa:ClickElement KeyModifiers="{x:Null}" AnimateMouse="False" Button="1" DoubleClick="False" Element="[item]" sap2010:WorkflowViewState.IdRef="ClickElement_3" OffsetX="5" OffsetY="5" PostWait="00:00:00" VirtualClick="True" />
+                  </ActivityAction>
+                </on:GetElement>
+                <Delay Duration="[TimeSpan.FromMilliseconds(TimeVar)]" sap2010:WorkflowViewState.IdRef="Delay_20" />
+                <Assign sap2010:WorkflowViewState.IdRef="Assign_9">
+                  <Assign.To>
+                    <OutArgument x:TypeArguments="x:Int32">[RowIndex]</OutArgument>
+                  </Assign.To>
+                  <Assign.Value>
+                    <InArgument x:TypeArguments="x:Int32">[RowIndex + 1]</InArgument>
+                  </Assign.Value>
+                </Assign>
+                <Delay Duration="[TimeSpan.FromMilliseconds(TimeVar)]" sap2010:WorkflowViewState.IdRef="Delay_21" />
+              </Sequence>
+            </Sequence>
+          </oa:BreakableWhile>
+          <on:GetElement Elements="{x:Null}" From="{x:Null}" Image="{x:Null}" LoopAction="{x:Null}" Timeout="{x:Null}" WaitForReady="{x:Null}" DisplayName="Results" sap2010:WorkflowViewState.IdRef="GetElement_11" MaxResults="1" MinResults="1" Selector="%[&#xA;  {&#xA;    &quot;Selector&quot;: &quot;NM&quot;,&#xA;    &quot;browser&quot;: &quot;ff&quot;,&#xA;    &quot;frame&quot;: &quot;-1&quot;,&#xA;    &quot;url&quot;: &quot;https://rpachallenge.com/&quot;&#xA;  },&#xA;  {&#xA;    &quot;xpath&quot;: &quot;/html/body/app-root/div[2]/app-rpa1/div/div[2]&quot;&#xA;  }&#xA;]">
+            <on:GetElement.Variables>
+              <Variable x:TypeArguments="x:Int32" Default="0" Name="Index" />
+              <Variable x:TypeArguments="x:Int32" Default="0" Name="Total" />
+            </on:GetElement.Variables>
+            <ActivityAction x:TypeArguments="on:NMElement">
+              <ActivityAction.Argument>
+                <DelegateInArgument x:TypeArguments="on:NMElement" Name="item" />
+              </ActivityAction.Argument>
+              <Assign sap2010:WorkflowViewState.IdRef="Assign_10">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="x:String">[Results]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="x:String">[item.Value]</InArgument>
+                </Assign.Value>
+              </Assign>
+            </ActivityAction>
+          </on:GetElement>
+          <WriteLine sap2010:WorkflowViewState.IdRef="WriteLine_1" Text="[&quot;Index Number :&quot;+FileIndexNumber.ToString()+&quot; &quot;+Results]" />
+          <on:GetElement Elements="{x:Null}" From="{x:Null}" Image="{x:Null}" LoopAction="{x:Null}" Timeout="{x:Null}" WaitForReady="{x:Null}" DisplayName="ClickReset" sap2010:WorkflowViewState.IdRef="GetElement_12" MaxResults="1" MinResults="1" Selector="%[&#xA;  {&#xA;    &quot;Selector&quot;: &quot;NM&quot;,&#xA;    &quot;browser&quot;: &quot;ff&quot;,&#xA;    &quot;frame&quot;: &quot;-1&quot;,&#xA;    &quot;url&quot;: &quot;https://rpachallenge.com/&quot;&#xA;  },&#xA;  {&#xA;    &quot;xpath&quot;: &quot;/html/body/app-root/div[2]/app-rpa1/div/div[1]/div[6]/button&quot;&#xA;  }&#xA;]">
+            <on:GetElement.Variables>
+              <Variable x:TypeArguments="x:Int32" Default="0" Name="Index" />
+              <Variable x:TypeArguments="x:Int32" Default="0" Name="Total" />
+            </on:GetElement.Variables>
+            <ActivityAction x:TypeArguments="on:NMElement">
+              <ActivityAction.Argument>
+                <DelegateInArgument x:TypeArguments="on:NMElement" Name="item" />
+              </ActivityAction.Argument>
+              <oa:ClickElement KeyModifiers="{x:Null}" AnimateMouse="False" Button="1" DoubleClick="False" Element="[item]" sap2010:WorkflowViewState.IdRef="ClickElement_4" OffsetX="5" OffsetY="5" PostWait="00:00:00" VirtualClick="True" />
+            </ActivityAction>
+          </on:GetElement>
+          <Assign sap2010:WorkflowViewState.IdRef="Assign_11">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:Int32">[RowIndex]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:Int32">0</InArgument>
+            </Assign.Value>
+          </Assign>
+          <Assign sap2010:WorkflowViewState.IdRef="Assign_1">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:Int32">[FileIndexNumber]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:Int32">[FileIndexNumber + 1]</InArgument>
+            </Assign.Value>
+          </Assign>
+        </Sequence>
+        <Delay Duration="[TimeSpan.FromMilliseconds(TimeVar)]" sap2010:WorkflowViewState.IdRef="Delay_3" />
+      </Sequence>
+    </oa:BreakableWhile>
+    <Delay Duration="[TimeSpan.FromMilliseconds(TimeVar)]" sap2010:WorkflowViewState.IdRef="Delay_2" />
+    <sads:DebugSymbol.Symbol>dw1DOlxFbXB0eS54YW1sAA==</sads:DebugSymbol.Symbol>
+  </Sequence>
+  <sap2010:WorkflowViewState.ViewStateManager>
+    <sap2010:ViewStateManager>
+      <sap2010:ViewStateData Id="InsertClipboard_1" sap:VirtualizedContainerService.HintSize="432,36" />
+      <sap2010:ViewStateData Id="InvokeCode_2" sap:VirtualizedContainerService.HintSize="432,55" />
+      <sap2010:ViewStateData Id="InsertClipboard_2" sap:VirtualizedContainerService.HintSize="432,36" />
+      <sap2010:ViewStateData Id="InvokeCode_3" sap:VirtualizedContainerService.HintSize="432,55" />
+      <sap2010:ViewStateData Id="InvokeCode_4" sap:VirtualizedContainerService.HintSize="432,55" />
+      <sap2010:ViewStateData Id="Delay_4" sap:VirtualizedContainerService.HintSize="432,22" />
+      <sap2010:ViewStateData Id="InvokeCode_1" sap:VirtualizedContainerService.HintSize="432,55" />
+      <sap2010:ViewStateData Id="Delay_1" sap:VirtualizedContainerService.HintSize="432,22" />
+      <sap2010:ViewStateData Id="OpenURL_1" sap:VirtualizedContainerService.HintSize="432,55" />
+      <sap2010:ViewStateData Id="InvokeCode_5" sap:VirtualizedContainerService.HintSize="432,55" />
+      <sap2010:ViewStateData Id="ClickElement_1" sap:VirtualizedContainerService.HintSize="200,36" />
+      <sap2010:ViewStateData Id="GetElement_8" sap:VirtualizedContainerService.HintSize="432,166" />
+      <sap2010:ViewStateData Id="ReadCSV_1" sap:VirtualizedContainerService.HintSize="374,70" />
+      <sap2010:ViewStateData Id="Delay_18" sap:VirtualizedContainerService.HintSize="374,22" />
+      <sap2010:ViewStateData Id="InvokeCode_6" sap:VirtualizedContainerService.HintSize="374,55" />
+      <sap2010:ViewStateData Id="Delay_19" sap:VirtualizedContainerService.HintSize="374,22" />
+      <sap2010:ViewStateData Id="ClickElement_2" sap:VirtualizedContainerService.HintSize="200,36" />
+      <sap2010:ViewStateData Id="GetElement_9" sap:VirtualizedContainerService.HintSize="256,166" />
+      <sap2010:ViewStateData Id="Assign_2" sap:VirtualizedContainerService.HintSize="242,60" />
+      <sap2010:ViewStateData Id="GetElement_1" sap:VirtualizedContainerService.HintSize="256,190" />
+      <sap2010:ViewStateData Id="Delay_5" sap:VirtualizedContainerService.HintSize="256,22" />
+      <sap2010:ViewStateData Id="Assign_3" sap:VirtualizedContainerService.HintSize="242,60" />
+      <sap2010:ViewStateData Id="GetElement_2" sap:VirtualizedContainerService.HintSize="256,190" />
+      <sap2010:ViewStateData Id="Delay_12" sap:VirtualizedContainerService.HintSize="256,22" />
+      <sap2010:ViewStateData Id="Assign_4" sap:VirtualizedContainerService.HintSize="242,60" />
+      <sap2010:ViewStateData Id="GetElement_3" sap:VirtualizedContainerService.HintSize="256,190" />
+      <sap2010:ViewStateData Id="Delay_13" sap:VirtualizedContainerService.HintSize="256,22" />
+      <sap2010:ViewStateData Id="Assign_5" sap:VirtualizedContainerService.HintSize="242,60" />
+      <sap2010:ViewStateData Id="GetElement_4" sap:VirtualizedContainerService.HintSize="256,190" />
+      <sap2010:ViewStateData Id="Delay_14" sap:VirtualizedContainerService.HintSize="256,22" />
+      <sap2010:ViewStateData Id="Assign_6" sap:VirtualizedContainerService.HintSize="242,60" />
+      <sap2010:ViewStateData Id="GetElement_5" sap:VirtualizedContainerService.HintSize="256,190" />
+      <sap2010:ViewStateData Id="Delay_15" sap:VirtualizedContainerService.HintSize="256,22" />
+      <sap2010:ViewStateData Id="Assign_7" sap:VirtualizedContainerService.HintSize="242,60" />
+      <sap2010:ViewStateData Id="GetElement_6" sap:VirtualizedContainerService.HintSize="256,190" />
+      <sap2010:ViewStateData Id="Delay_16" sap:VirtualizedContainerService.HintSize="256,22" />
+      <sap2010:ViewStateData Id="Assign_8" sap:VirtualizedContainerService.HintSize="242,60" />
+      <sap2010:ViewStateData Id="GetElement_7" sap:VirtualizedContainerService.HintSize="256,190" />
+      <sap2010:ViewStateData Id="Delay_17" sap:VirtualizedContainerService.HintSize="256,22" />
+      <sap2010:ViewStateData Id="ClickElement_3" sap:VirtualizedContainerService.HintSize="200,36" />
+      <sap2010:ViewStateData Id="GetElement_10" sap:VirtualizedContainerService.HintSize="256,166" />
+      <sap2010:ViewStateData Id="Delay_20" sap:VirtualizedContainerService.HintSize="256,22" />
+      <sap2010:ViewStateData Id="Assign_9" sap:VirtualizedContainerService.HintSize="256,60" />
+      <sap2010:ViewStateData Id="Delay_21" sap:VirtualizedContainerService.HintSize="256,22" />
+      <sap2010:ViewStateData Id="Sequence_4" sap:VirtualizedContainerService.HintSize="278,2764">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Sequence_5" sap:VirtualizedContainerService.HintSize="300,2888">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="BreakableWhile_2" sap:VirtualizedContainerService.HintSize="374,2988" />
+      <sap2010:ViewStateData Id="Assign_10" sap:VirtualizedContainerService.HintSize="242,60" />
+      <sap2010:ViewStateData Id="GetElement_11" sap:VirtualizedContainerService.HintSize="374,190" />
+      <sap2010:ViewStateData Id="WriteLine_1" sap:VirtualizedContainerService.HintSize="374,61" />
+      <sap2010:ViewStateData Id="ClickElement_4" sap:VirtualizedContainerService.HintSize="200,36" />
+      <sap2010:ViewStateData Id="GetElement_12" sap:VirtualizedContainerService.HintSize="374,166" />
+      <sap2010:ViewStateData Id="Assign_11" sap:VirtualizedContainerService.HintSize="374,60" />
+      <sap2010:ViewStateData Id="Assign_1" sap:VirtualizedContainerService.HintSize="374,60" />
+      <sap2010:ViewStateData Id="Sequence_2" sap:VirtualizedContainerService.HintSize="396,4178">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            <x:Boolean x:Key="IsAnnotationDocked">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="Delay_3" sap:VirtualizedContainerService.HintSize="396,22" />
+      <sap2010:ViewStateData Id="Sequence_3" sap:VirtualizedContainerService.HintSize="418,4364">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="BreakableWhile_1" sap:VirtualizedContainerService.HintSize="432,4464" />
+      <sap2010:ViewStateData Id="Delay_2" sap:VirtualizedContainerService.HintSize="432,22" />
+      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="454,5702">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </sap2010:ViewStateData>
+      <sap2010:ViewStateData Id="New_Workflow_1" sap:VirtualizedContainerService.HintSize="494,5782" />
+    </sap2010:ViewStateManager>
+  </sap2010:WorkflowViewState.ViewStateManager>
+</Activity>
